@@ -38,21 +38,7 @@ for i, birthDay in enumerate(df['Data de Nascimento']):
         print()
         print()
 
-        writer = pd.ExcelWriter('Área de Trabalho/tabela.xlsx')
 
-        dates = [[name, birthDay, tell, email]]
+
 
         
-
-loop = 0
-while True:
-    loop = loop + 1
-
-    outPut = pd.DataFrame({'Loop': [loop]})
-
-    df.to_excel(writer, dates, index= False)
-    writer.save()
-    if loop>=32:
-        break
-
-writer.save()
