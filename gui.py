@@ -97,6 +97,7 @@ class App(customtkinter.CTk):
                     
                 def loopTable(event):
 
+                    global new_workbook
                     new_workbook = openpyxl.Workbook()
                     new_worksheet = new_workbook.active
 
@@ -125,16 +126,40 @@ class App(customtkinter.CTk):
                         
                         if len(birthDay) > 5 and birthDay[3:5] == str(entryMonth.get()):
                             new_worksheet.append([name, birthDay, email, tel])
-                    agora = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
-                    nome_arquivo = f'planilha_{agora}.xlsx'
-                    new_workbook.save(nome_arquivo)
 
-                entryMonth.bind('<Return>', loopTable)
+                    windowsNameTable = customtkinter.CTkToplevel()
+                    windowsNameTable.geometry('400x100')
+                    windowsNameTable.title('Informe o nome do arquivo')
+                    windowsNameTable.focus_force()
+                    windowsNameTable.grab_set()
+                    windowsNameTable.lift()
+
+                    entryNameTable = customtkinter.CTkEntry(windowsNameTable, placeholder_text="Informe o nome do arquivo", width=350)
+                    entryNameTable.focus()
+                    entryNameTable.grid( padx=(20, 0), pady=(20, 20), sticky="nsew")
+
+                    
+                    def downloadTable(e):
+                        if len(str(entryNameTable.get())) > 0:
+                            agora = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+                            nome_arquivo = f'{str(entryNameTable.get())}_{agora}.xlsx'
+                            new_workbook.save(nome_arquivo)
+                            windowsNameTable.destroy()
+                            
+
+                    entryNameTable.bind('<Return>', downloadTable)
+
 
             else:
                 file = ''
                 messagebox.showwarning(title='Arquivo incompatível', message='Selecione um arquivo no formato csv')
                 return chosseFile()
+            
+                
+
+            
+                
+            entryMonth.bind('<Return>', loopTable)
             
             
         self.main_button_1 = customtkinter.CTkButton(master=self, fg_color="transparent", border_width=2, text='Chosse file',text_color=("gray10", "#DCE4EE"), command=chosseFile)
