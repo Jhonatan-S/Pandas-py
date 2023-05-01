@@ -52,11 +52,11 @@ class App(customtkinter.CTk):
     
 
         # create main entry and button
-        self.entry = customtkinter.CTkEntry(self, placeholder_text="Choose file csv")
+        self.entry = customtkinter.CTkLabel(self, text='', bg_color='grey', anchor="w", justify="left", padx=10, pady=10)
         self.entry.grid(row=3, column=1, columnspan=2, padx=(20, 0), pady=(20, 20), sticky="nsew")
 
         def chosseFile():
-            self.entry.delete(0, 'end')
+            self.entry.configure(text='')
             file = filedialog.askopenfilename(
                                 initialdir="/",
                                 title="Selecione um arquivo CSV",
@@ -78,7 +78,8 @@ class App(customtkinter.CTk):
 
             if extension == ".csv":
                 def chooseFileWindow():
-                    self.entry.insert('end', str(file_name))
+                    
+                    self.entry.configure(text=f'{file_name}')
                     windowsBirth = customtkinter.CTkToplevel()
                     windowsBirth.geometry('400x200')
                     windowsBirth.title('Informe o mês de aniversário')
@@ -124,8 +125,9 @@ class App(customtkinter.CTk):
                         tel = df.loc[index, 'Telefone']
                         email = df.loc[index, 'Email do Hóspede']
                         
-                        if len(birthDay) > 5 and birthDay[3:5] == str(entryMonth.get()):
+                        if birthDay[3:5] == str(entryMonth.get()):
                             new_worksheet.append([name, birthDay, email, tel])
+
 
                     windowsNameTable = customtkinter.CTkToplevel()
                     windowsNameTable.geometry('400x100')
