@@ -57,7 +57,11 @@ class App(customtkinter.CTk):
 
         def chosseFile():
             self.entry.delete(0, 'end')
-            file = filedialog.askopenfilename()
+            file = filedialog.askopenfilename(
+                                initialdir="/",
+                                title="Selecione um arquivo CSV",
+                                filetypes=(("CSV", "*.csv"),)
+                            )
             df = pd.read_csv(file, encoding='ISO-8859-1', delimiter=';')
 
             if file:
@@ -73,7 +77,7 @@ class App(customtkinter.CTk):
             extension = os.path.splitext(filename)[1]  # Obter a extensão do arquivo
 
             if extension == ".csv":
-                def chosseFilechosseFile():
+                def chooseFileWindow():
                     self.entry.insert('end', str(file_name))
                     windowsBirth = customtkinter.CTkToplevel()
                     windowsBirth.geometry('400x200')
@@ -88,7 +92,7 @@ class App(customtkinter.CTk):
                     entryMonth.grid( padx=(20, 0), pady=(20, 20), sticky="nsew")
 
 
-                chosseFilechosseFile()
+                chooseFileWindow()
 
                     
                 def loopTable(event):
@@ -103,14 +107,15 @@ class App(customtkinter.CTk):
                     new_worksheet.append(header)
 
                     while str(entryMonth.get())[0] == ' ':
-                        return chosseFilechosseFile()
+                        return messagebox.showwarning(title='Erro', message='Por favor! Informe o mês no formato XX. Sem espaço e com dois dígitos')
 
                     while len(entryMonth.get()) > 2 :
                         if entryMonth.get()[0] == ' ' or  entryMonth.get()[1] == ' ' or entryMonth.get()[2] or len(entryMonth.get()) > 2:
-                            return chosseFilechosseFile()
+                            return messagebox.showwarning(title='Erro', message='Por favor! Informe o mês no formato XX. Sem espaço e com dois dígitos')
 
                     while len(entryMonth.get()) < 2:
-                        return chosseFilechosseFile()
+                        return messagebox.showwarning(title='Erro', message='Por favor! Informe o mês no formato XX. Sem espaço e com dois dígitos')
+
                     
                     for index, birthDay in enumerate(df['Data de Nascimento']): 
                         birthDay = str(birthDay)
