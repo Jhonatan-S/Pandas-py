@@ -49,7 +49,7 @@ class App(customtkinter.CTk):
         self.scaling_optionemenu.grid(row=8, column=0, padx=20, pady=(10, 20))
 
         # create main entry and button
-        self.entry = customtkinter.CTkLabel(self, text='', bg_color='light blue', anchor="w", justify="left", padx=10, pady=10)
+        self.entry = customtkinter.CTkLabel(self, text='', bg_color='light blue', anchor="w", justify="left", padx=10, pady=10, text_color='black')
         self.entry.grid(row=3, column=1, columnspan=2, padx=(20, 0), pady=(20, 20), sticky="nsew")
 
         def chosseFile():
@@ -76,8 +76,8 @@ class App(customtkinter.CTk):
 
                 def loopTable(event):
 
-                    while len(entryNameTable.get()) < 0:
-                        messagebox.showwarning(title='Erro', message='Informe o nome da planilha a ser salva')
+                    while len(entryNameTable.get()) < 2:
+                        return messagebox.showwarning(title='Erro', message='O nome da planilha deve conter mais de 03 caracteres')
 
                     while str(entryMonth.get())[0] == ' ' or len(entryMonth.get()) > 2 or len(entryMonth.get()) < 2 or entryMonth.get().isalpha() or str(entryMonth.get())[0].isalpha() or str(entryMonth.get())[1].isalpha():
                         return messagebox.showwarning(title='Erro', message='Por favor! Informe o mês no formato XX. Sem espaço apenas números')
