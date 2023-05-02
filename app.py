@@ -48,11 +48,8 @@ class App(customtkinter.CTk):
                                                                command=self.change_scaling_event)
         self.scaling_optionemenu.grid(row=8, column=0, padx=20, pady=(10, 20))
 
-
-    
-
         # create main entry and button
-        self.entry = customtkinter.CTkLabel(self, text='', bg_color='grey', anchor="w", justify="left", padx=10, pady=10)
+        self.entry = customtkinter.CTkLabel(self, text='', bg_color='light blue', anchor="w", justify="left", padx=10, pady=10)
         self.entry.grid(row=3, column=1, columnspan=2, padx=(20, 0), pady=(20, 20), sticky="nsew")
 
         def chosseFile():
@@ -66,8 +63,7 @@ class App(customtkinter.CTk):
 
             if file:
                 file_name = os.path.basename(file)
-            else:
-                print("Nenhum arquivo selecionado.")
+          
     
             filename = file
             print(str(file))
@@ -77,27 +73,15 @@ class App(customtkinter.CTk):
             extension = os.path.splitext(filename)[1]  # Obter a extensão do arquivo
 
             if extension == ".csv":
-                def chooseFileWindow():
-                    
-                    self.entry.configure(text=f'{file_name}')
-                    windowsBirth = customtkinter.CTkToplevel()
-                    windowsBirth.geometry('400x200')
-                    windowsBirth.title('Informe o mês de aniversário')
-                    windowsBirth.focus_force()
-                    windowsBirth.grab_set()
-                    windowsBirth.lift()
 
-
-                    global entryMonth
-                    entryMonth = customtkinter.CTkEntry(windowsBirth, placeholder_text="Informe o mês no formato. 02", width=350)
-                    entryMonth.grid( padx=(20, 0), pady=(20, 20), sticky="nsew")
-
-
-                chooseFileWindow()
-
-                    
                 def loopTable(event):
 
+                    while len(entryNameTable.get()) < 0:
+                        messagebox.showwarning(title='Erro', message='Informe o nome da planilha a ser salva')
+
+                    while str(entryMonth.get())[0] == ' ' or len(entryMonth.get()) > 2 or len(entryMonth.get()) < 2 or entryMonth.get().isalpha() or str(entryMonth.get())[0].isalpha() or str(entryMonth.get())[1].isalpha():
+                        return messagebox.showwarning(title='Erro', message='Por favor! Informe o mês no formato XX. Sem espaço apenas números')
+                    
                     global new_workbook
                     new_workbook = openpyxl.Workbook()
                     new_worksheet = new_workbook.active
@@ -107,16 +91,6 @@ class App(customtkinter.CTk):
 
                     # Adiciona o cabeçalho à primeira linha da planilha
                     new_worksheet.append(header)
-
-                    while str(entryMonth.get())[0] == ' ':
-                        return messagebox.showwarning(title='Erro', message='Por favor! Informe o mês no formato XX. Sem espaço e com dois dígitos')
-
-                    while len(entryMonth.get()) > 2 :
-                        if entryMonth.get()[0] == ' ' or  entryMonth.get()[1] == ' ' or entryMonth.get()[2] or len(entryMonth.get()) > 2:
-                            return messagebox.showwarning(title='Erro', message='Por favor! Informe o mês no formato XX. Sem espaço e com dois dígitos')
-
-                    while len(entryMonth.get()) < 2:
-                        return messagebox.showwarning(title='Erro', message='Por favor! Informe o mês no formato XX. Sem espaço e com dois dígitos')
 
                     
                     for index, birthDay in enumerate(df['Data de Nascimento']): 
@@ -128,44 +102,72 @@ class App(customtkinter.CTk):
                         if birthDay[3:5] == str(entryMonth.get()):
                             new_worksheet.append([name, birthDay, email, tel])
 
-
-                    windowsNameTable = customtkinter.CTkToplevel()
-                    windowsNameTable.geometry('400x100')
-                    windowsNameTable.title('Informe o nome do arquivo')
-                    windowsNameTable.focus_force()
-                    windowsNameTable.grab_set()
-                    windowsNameTable.lift()
-
-                    entryNameTable = customtkinter.CTkEntry(windowsNameTable, placeholder_text="Informe o nome do arquivo", width=350)
-                    entryNameTable.focus()
-                    entryNameTable.grid( padx=(20, 0), pady=(20, 20), sticky="nsew")
-
                     
-                    def downloadTable(e):
-                        if len(str(entryNameTable.get())) > 0:
-                            agora = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
-                            nome_arquivo = f'{str(entryNameTable.get())}_{agora}.xlsx'
-                            new_workbook.save(nome_arquivo)
-                            windowsNameTable.destroy()
+                    
+                    
+                    agora = datetime.now().strftime('%Y-%m-%d')
+                    nome_arquivo = f'{str(entryNameTable.get())}_{agora}.xlsx'
+                    new_workbook.save(nome_arquivo)
+                    entryNameTable.delete(0, 'end')
+                    entryMonth.delete(0, 'end')
+                            
                             
 
-                    entryNameTable.bind('<Return>', downloadTable)
+                    
+
+                def chooseFileWindow():
+                    
+                    self.entry.configure(text=f'{file_name}')
+                    windowsBirth = customtkinter.CTkToplevel()
+                    windowsBirth.geometry('400x220')
+                    windowsBirth.maxsize(width=400, height=220)
+                    windowsBirth.minsize(width=400, height=220)
+                    windowsBirth.title('Adicione as informções')
+                    windowsBirth.focus_force()
+                    windowsBirth.grab_set()
+                    windowsBirth.lift()
 
 
+                    global entryMonth
+
+                    labelFileName = customtkinter.CTkLabel(windowsBirth, text='Informe o nome do arquivo. Ex: Dezembro', width=350, anchor="w", justify="left")
+                    labelFileName.grid( padx=(20, 0), pady=(5, 5), sticky="nsew")
+
+                    global entryNameTable
+                    entryNameTable = customtkinter.CTkEntry(windowsBirth, placeholder_text="Informe o nome do arquivo", width=350)
+                    entryNameTable.grid( padx=(20, 0), pady=(10, 10), sticky="nsew")
+
+                    labelMonthBirth = customtkinter.CTkLabel(windowsBirth, text='Informe o mês do aniversário. Ex: 02', width=350, anchor="w", justify="left")
+                    labelMonthBirth.grid( padx=(20, 0), pady=(5, 5), sticky="nsew")
+
+
+                    
+                    entryMonth = customtkinter.CTkEntry(windowsBirth, placeholder_text="Informe o mês no formato XX", width=350, corner_radius=2)
+                    entryMonth.grid( padx=(20, 0), pady=(10, 10), sticky="nsew")
+
+                    
+
+          
+
+                    entryMonth.bind('<Return>', loopTable)
+                    entryNameTable.bind('<Return>', loopTable)
+
+                chooseFileWindow()
+
+                    
             else:
                 file = ''
                 messagebox.showwarning(title='Arquivo incompatível', message='Selecione um arquivo no formato csv')
                 return chosseFile()
             
-                
-
-            
-                
-            entryMonth.bind('<Return>', loopTable)
+                      
+        
             
             
         self.main_button_1 = customtkinter.CTkButton(master=self, fg_color="transparent", border_width=2, text='Chosse file',text_color=("gray10", "#DCE4EE"), command=chosseFile)
         self.main_button_1.grid(row=3, column=3, padx=(20, 20), pady=(20, 20), sticky="nsew")
+
+
        
 
     def open_input_dialog_event(self):
